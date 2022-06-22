@@ -9,6 +9,10 @@ public class HelloWorldBean {
 		this.message = message;
 	}
 
+	public HelloWorldBean() {
+		super();
+	}
+
 	public String getMessage() {
 		return message;
 	}
@@ -21,5 +25,4 @@ public class HelloWorldBean {
 	public String toString() {
 		return "HelloWorldBean [message=" + message + "]";
 	}
-	
 }
