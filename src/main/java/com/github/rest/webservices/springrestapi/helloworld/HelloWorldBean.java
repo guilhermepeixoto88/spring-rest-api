@@ -1,4 +1,4 @@
-package com.github.rest.webservices.springrestapi;
+package com.github.rest.webservices.springrestapi.helloworld;
 
 public class HelloWorldBean {
 	
