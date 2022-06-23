@@ -25,7 +25,11 @@ public class UserResource {
 	
 	@GetMapping(path="/users/{id}")
 	public User findById(@PathVariable Integer id) {
-		return userDao.findOne(id);
+		User user = userDao.findOne(id);
+		if(user == null) {
+			throw new UserNotFoundException("id:".concat(id.toString()));
+		}
+		return user;
 	}
 	
 	@PostMapping(path="/users")
