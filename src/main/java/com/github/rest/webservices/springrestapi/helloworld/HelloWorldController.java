@@ -30,6 +30,6 @@ public class HelloWorldController {
 	
 	@GetMapping(path="/hello-world-internationalized")
 	public String helloWorldInternationalized() {
-		return messageSource.getMessage("hello.world.message", null, "Default Message" , LocaleContextHolder.getLocale());
+		return messageSource.getMessage("hello.world.message", null, LocaleContextHolder.getLocale());
 	}
 }
