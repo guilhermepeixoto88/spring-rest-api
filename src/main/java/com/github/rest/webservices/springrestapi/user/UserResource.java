@@ -1,13 +1,17 @@
 package com.github.rest.webservices.springrestapi.user;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +32,18 @@ public class UserResource {
 	}
 	
 	@GetMapping(path="/users/{id}")
-	public User findById(@PathVariable Integer id) {
+	public EntityModel<User> findById(@PathVariable Integer id) {
 		User user = userDao.findOne(id);
+		
 		if(user == null) {
 			throw new UserNotFoundException("id:".concat(id.toString()));
 		}
-		return user;
+		
+		EntityModel<User> model = EntityModel.of(user);
+		WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).listAll());
+		model.add(linkBuilder.withRel("all-users"));
+		
+		return model;
 	}
 	
 	@PostMapping(path="/users")
