@@ -1,9 +1,14 @@
 package com.github.rest.webservices.springrestapi.exception;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +23,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 	
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ExceptionResponse> handleAllExceptions(Exception ex, WebRequest request){
+		
 		ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
 		
 		return new ResponseEntity<ExceptionResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -25,8 +31,24 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 	
 	@ExceptionHandler(UserNotFoundException.class)
 	public final ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException ex, WebRequest request){
+		
 		ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
 		
 		return new ResponseEntity<ExceptionResponse>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(
+			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		List<String> errorMessageList = new ArrayList<>();
+		
+		for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+			errorMessageList.add(error.getDefaultMessage());
+		}
+
+		ExceptionResponse response = new ExceptionResponse(new Date(), errorMessageList, ex.getBindingResult().toString());
+		
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 }

@@ -3,8 +3,11 @@ package com.github.rest.webservices.springrestapi.user;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +37,7 @@ public class UserResource {
 	}
 	
 	@PostMapping(path="/users")
-	public ResponseEntity<Object> create(@RequestBody User user) {
+	public ResponseEntity<Object> create(@Valid @RequestBody User user) {
 		User createdUser = userDao.save(user);
 		
 		URI uri = ServletUriComponentsBuilder
